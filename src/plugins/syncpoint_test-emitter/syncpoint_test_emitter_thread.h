@@ -37,8 +37,8 @@ namespace fawkes {
 class SyncPointTestEmitterThread
 : public fawkes::Thread,
   public fawkes::LoggingAspect,
-  public fawkes::BlockedTimingAspect,
-  public fawkes::SyncPointManagerAspect
+  public fawkes::BlockedTimingAspect
+//  public fawkes::SyncPointManagerAspect
 {
  public:
   SyncPointTestEmitterThread();
@@ -48,7 +48,7 @@ class SyncPointTestEmitterThread
   virtual void finalize();
 
  private:
-  fawkes::RefPtr<fawkes::SyncPoint> syncpoint_;
+//  fawkes::RefPtr<fawkes::SyncPoint> syncpoint_;
   uint loopcount_;
 };
 

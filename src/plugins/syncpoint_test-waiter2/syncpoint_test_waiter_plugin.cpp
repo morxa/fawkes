@@ -1,5 +1,5 @@
 /***************************************************************************
- *  syncpoint_test_waiter_thread.h - SyncPoint Test Waiter Plugin
+ *  syncpoint_test_waiter_plugin.cpp - SyncPoint Test Waiter Plugin
  *
  *   Created on Wed Jan 08 17:12:13 2014
  *   Copyright  2014  Till Hofmann
@@ -19,38 +19,28 @@
  *  Read the full text in the LICENSE.GPL file in the doc directory.
  */
 
+#include <core/plugin.h>
 
-#ifndef __PLUGINS_SYNCPOINT_TEST_WAITER_SYNCPOINT_TEST_WAITER_THREAD_H_
-#define __PLUGINS_SYNCPOINT_TEST_WAITER_SYNCPOINT_TEST_WAITER_THREAD_H_
+#include "syncpoint_test_waiter_thread.h"
 
-#include <core/threading/thread.h>
-#include <aspect/logging.h>
-#include <aspect/syncpoint_manager.h>
-#include <core/utils/refptr.h>
+using namespace fawkes;
 
-#include <aspect/blocked_timing.h>
-
-namespace fawkes {
-  class Position3DInterface;
-}
-
-class SyncPointTestWaiterThread
-: public fawkes::Thread,
-  public fawkes::LoggingAspect,
-  public fawkes::BlockedTimingAspect
-//  public fawkes::SyncPointManagerAspect
+/** Plugin to test sync points
+ * This plugin waits for a given sync point every loop
+ * @author Till Hofmann
+ */
+class SyncPointTestWaiterPlugin2 : public fawkes::Plugin
 {
  public:
-  SyncPointTestWaiterThread();
-
-  virtual void init();
-  virtual void loop();
-  virtual void finalize();
-
-
- private:
-//  fawkes::RefPtr<fawkes::SyncPoint> syncpoint_;
-  uint loopcount_;
+  /** Constructor.
+   * @param config Fawkes configuration
+   */
+  SyncPointTestWaiterPlugin2(Configuration *config)
+    : Plugin(config)
+  {
+    thread_list.push_back(new SyncPointTestWaiterThread2());
+  }
 };
 
-#endif
+PLUGIN_DESCRIPTION("SyncPoint Test Waiter Plugin 2")
+EXPORT_PLUGIN(SyncPointTestWaiterPlugin2)

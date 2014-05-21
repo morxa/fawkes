@@ -36,6 +36,8 @@
 #include <cstdio>
 #include <unistd.h>
 
+#include <set>
+
 namespace fawkes {
 
 /** @class ThreadListSealedException <core/threading/thread_list.h>
@@ -211,6 +213,7 @@ ThreadList::wakeup_unlocked(Barrier *barrier)
   for (iterator i = begin(); i != end(); ++i) {
     if ( ! (*i)->flagged_bad() ) {
       try {
+        printf("Waking up thread %s\n", (*i)->name());
         (*i)->wakeup(barrier);
       } catch (Exception &e) {
         if (! exc) {
@@ -263,7 +266,13 @@ ThreadList::wakeup_and_wait(unsigned int timeout_sec, unsigned int timeout_nanos
     RefPtr<ThreadList> passed_threads = __wnw_barrier->passed_threads();
     ThreadList bad_threads;
     for (iterator i = begin(); i != end(); ++i) {
+      // this is the fix
+//      if ((*i)->flagged_bad()) {
+//        printf("Thread %s is already flagged as bad, ignoring\n", (*i)->name());
+//        continue;
+//      }
       bool ok = false;
+      printf("Testing thread %s\n", (*i)->name());
       for (iterator j = passed_threads->begin(); j != passed_threads->end(); ++j) {
 	if (*j == *i) {
 	  ok = true;
@@ -325,12 +334,23 @@ ThreadList::set_maintain_barrier(bool maintain_barrier)
 void
 ThreadList::try_recover(std::list<std::string> &recovered_threads)
 {
+  printf("try_recover start\n");
   MutexLocker lock(mutex());
 
   bool changed = false;
   __wnw_bbit = __wnw_bad_barriers.begin();
   while (__wnw_bbit != __wnw_bad_barriers.end()) {
     iterator i = __wnw_bbit->second.begin();
+
+    std::set <std::string> occ_threads;
+    printf("barrier start\n");
+    for (iterator it = __wnw_bbit->second.begin(); it != __wnw_bbit->second.end(); it++) {
+      printf("in barrier: %s\n", (*it)->name());
+      if (!(occ_threads.insert((*it)->name()).second)) {
+        throw Exception("Thread %s occurs twice in a bad barrier\n", (*it)->name());
+      }
+    }
+    printf("barrier end\n");
     while (i != __wnw_bbit->second.end()) {
       if ( (*i)->waiting() ) {
 	// waiting means running() finished and the barrier has been passed
@@ -350,7 +370,18 @@ ThreadList::try_recover(std::list<std::string> &recovered_threads)
       ++__wnw_bbit;
     }
   }
+  std::set <std::string> occ_threads;
+  for (std::list<std::string>::iterator it = recovered_threads.begin(); it != recovered_threads.end(); it++) {
+    printf("recovered thread %s\n", it->c_str());
+    bool ret = occ_threads.insert(*it).second;
+    if (!ret) {
+      printf("Thread %s was recovered twice\n", it->c_str());
+//      throw Exception("Thread %s was recovered twice\n", it->c_str());
+    }
+  }
+  printf("total number of recovered threads: %lu\n", occ_threads.size());
   if ( changed )  update_barrier();
+  printf("try_recover end\n");
 }
 
 /** Initialize threads.

@@ -22,6 +22,8 @@
 
 #include "syncpoint_test_waiter_thread.h"
 
+#include <utils/time/wait.h>
+
 using namespace fawkes;
 
 /** @class SyncPointTestWaiterThread "syncpoint_test_waiter_thread.h"
@@ -31,55 +33,58 @@ using namespace fawkes;
 
 /** Constructor. */
 SyncPointTestWaiterThread::SyncPointTestWaiterThread()
-  : Thread("SyncPointTestWaiterThread", Thread::OPMODE_CONTINUOUS)
-   // BlockedTimingAspect(BlockedTimingAspect::WAKEUP_HOOK_WORLDSTATE)
+  : Thread("SyncPointTestWaiterThread", Thread::OPMODE_WAITFORWAKEUP),
+    BlockedTimingAspect(BlockedTimingAspect::WAKEUP_HOOK_WORLDSTATE)
 {
 }
 
 void
 SyncPointTestWaiterThread::init()
 {
-  syncpoint_ = syncpoint_manager->get_syncpoint(name(), "/test/1");
+//  syncpoint_ = syncpoint_manager->get_syncpoint(name(), "/test/1");
   loopcount_ = 0;
 }
 
 void
 SyncPointTestWaiterThread::finalize()
 {
-  syncpoint_manager->release_syncpoint(name(), syncpoint_);
+//  syncpoint_manager->release_syncpoint(name(), syncpoint_);
 }
 
 void
 SyncPointTestWaiterThread::loop()
 {
   ++loopcount_;
+  if (loopcount_ % 2 == 0)
+    TimeWait::wait(150000);
 
-  if (loopcount_ == 100) {
+  logger->log_info(name(), "Loop %u", loopcount_);
+//  if (loopcount_ == 100) {
     // release syncpoint
-    logger->log_debug(name(), "releasing syncpoint %s", syncpoint_->get_identifier());
-    syncpoint_manager->release_syncpoint(name(), syncpoint_);
-    return;
-  }
+//    logger->log_debug(name(), "releasing syncpoint %s", syncpoint_->get_identifier());
+//    syncpoint_manager->release_syncpoint(name(), syncpoint_);
+//    return;
+//  }
 
-  if (loopcount_ == 101) {
+//  if (loopcount_ == 101) {
     // get it back
-    syncpoint_manager->get_syncpoint(name(), "/test/1");
-    logger->log_debug(name(), "regained syncpoint %s", syncpoint_->get_identifier());
-  }
+//    syncpoint_manager->get_syncpoint(name(), "/test/1");
+//    logger->log_debug(name(), "regained syncpoint %s", syncpoint_->get_identifier());
+//  }
 
-  if (loopcount_ == 150) {
+//  if (loopcount_ == 150) {
     // release first sync point get a new one
-    logger->log_debug(name(), "releasing syncpoint %s", syncpoint_->get_identifier());
-    syncpoint_manager->release_syncpoint(name(), syncpoint_);
-    syncpoint_ = syncpoint_manager->get_syncpoint(name(), "/test/2");
-    logger->log_debug(name(), "regained syncpoint %s", syncpoint_->get_identifier());
-  }
+//    logger->log_debug(name(), "releasing syncpoint %s", syncpoint_->get_identifier());
+//    syncpoint_manager->release_syncpoint(name(), syncpoint_);
+//    syncpoint_ = syncpoint_manager->get_syncpoint(name(), "/test/2");
+//    logger->log_debug(name(), "regained syncpoint %s", syncpoint_->get_identifier());
+//  }
 
   // this should put this thread on hold for many iterations
   // that's not good, but it's only a test
 
-  logger->log_info(name(), "[%u] waiting for syncpoint %s", loopcount_, syncpoint_->get_identifier());
-  syncpoint_->wait(name());
-  logger->log_info(name(), "[%u] got syncpoint %s", loopcount_, syncpoint_->get_identifier());
+//  logger->log_info(name(), "[%u] waiting for syncpoint %s", loopcount_, syncpoint_->get_identifier());
+//  syncpoint_->wait(name());
+//  logger->log_info(name(), "[%u] got syncpoint %s", loopcount_, syncpoint_->get_identifier());
 
 }

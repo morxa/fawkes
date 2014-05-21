@@ -20,8 +20,8 @@
  */
 
 
-#ifndef __PLUGINS_SYNCPOINT_TEST_WAITER_SYNCPOINT_TEST_WAITER_THREAD_H_
-#define __PLUGINS_SYNCPOINT_TEST_WAITER_SYNCPOINT_TEST_WAITER_THREAD_H_
+#ifndef __PLUGINS_SYNCPOINT_TEST_WAITER_SYNCPOINT_TEST_WAITER_THREAD2_H_
+#define __PLUGINS_SYNCPOINT_TEST_WAITER_SYNCPOINT_TEST_WAITER_THREAD2_H_
 
 #include <core/threading/thread.h>
 #include <aspect/logging.h>
@@ -34,14 +34,14 @@ namespace fawkes {
   class Position3DInterface;
 }
 
-class SyncPointTestWaiterThread
+class SyncPointTestWaiterThread2
 : public fawkes::Thread,
   public fawkes::LoggingAspect,
   public fawkes::BlockedTimingAspect
 //  public fawkes::SyncPointManagerAspect
 {
  public:
-  SyncPointTestWaiterThread();
+  SyncPointTestWaiterThread2();
 
   virtual void init();
   virtual void loop();
