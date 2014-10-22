@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE interface SYSTEM "interface.dtd">
+<interface name="AgentInterface" author="Till Hofmann" year="2014">
+  <data>
+    <comment>This interface provides information about the running agent.</comment>
+    <field type="string" length="20000" name="history">All actions performed in the past.</field>
+    <field type="string" length="20000" name="plan">All planned actions.</field>
+  </data>
+</interface>
