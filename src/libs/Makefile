@@ -53,7 +53,7 @@ gui_utils: core netcomm plugin logging
 logging: core utils netcomm
 naoutils: core utils
 webview: core utils logging
-baseapp: core utils aspect config netcomm blackboard plugin logging
+baseapp: core utils aspect config netcomm blackboard plugin logging syncpoint
 tf: core utils blackboard interface interfaces
 fvutils: core utils netcomm logging
 fvcams fvmodels fvfilters fvclassifiers fvstereo fvwidgets: core utils fvutils logging
@@ -65,7 +65,7 @@ endif
 protobuf_clips: core logging protobuf_comm
 pcl_utils: core tf
 kdl_parser: core
-syncpoint: core 
+syncpoint: core logging
 
 include $(BUILDSYSDIR)/rules.mk
 include $(LIBSRCDIR)/extlibs.mk
