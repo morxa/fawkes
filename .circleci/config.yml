@@ -7,7 +7,7 @@ jobs:
   build:
     <<: *defaults
     steps:
-      - run: dnf install ccache
+      - run: dnf install -y ccache
       - run:
           name: "Add ROS to the bash environment"
           command: |
