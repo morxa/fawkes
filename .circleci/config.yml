@@ -1,0 +1,9 @@
+# vim:syntax=yaml
+version: 2
+jobs:
+  build:
+    docker:
+      - image: morxa/fawkes-buildenv:2017-f27-kinetic
+    steps:
+      - checkout
+      - run: make -j`nproc` all gui
