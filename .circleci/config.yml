@@ -33,7 +33,7 @@ jobs:
             - ccache-v1-master-
             - ccache-v1-
       - checkout
-      - run: make -C src/libs/core
+      - run: make all gui
       - run:
           name: Print ccache usage
           command: |
