@@ -16,7 +16,8 @@ jobs:
       - run: make all gui
       - save_cache:
           key: build-v1-{{ .Branch }}-{{ .Revision }}
-          path: .
+          paths:
+            - .
       - persist_to_workspace:
           root: .
           paths:
