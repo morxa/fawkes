@@ -3,7 +3,24 @@ version: 2
 jobs:
   build:
     docker:
-      - image: morxa/fawkes-buildenv:2017-f27-kinetic
+      - image: morxa/fawkes-buildenv:f27-kinetic
     steps:
       - checkout
       - run: make -j`nproc` all gui
+  test:
+    steps: 
+      - run: make -j`nproc` test
+  check:
+    steps:
+      - run: make -j`nproc` check
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - check:
+          requires:
+            - build
