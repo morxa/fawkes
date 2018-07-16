@@ -7,6 +7,10 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - run:
+          name: "Add ROS to the bash environment"
+          command: |
+            echo 'source /usr/lib64/ros/setup.bash' >> $BASH_ENV
       - restore_cache:
           keys:
             - build-v1-{{ .Branch }}-{{ .Revision }}
