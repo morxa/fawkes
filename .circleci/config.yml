@@ -19,7 +19,7 @@ jobs:
             - build-v1-master-
             - build-v1-
       - checkout
-      - run: make all gui
+      - run: make -C src/libs/core
       - save_cache:
           key: build-v1-{{ .Branch }}-{{ .Revision }}
           paths:
