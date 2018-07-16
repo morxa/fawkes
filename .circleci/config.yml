@@ -8,15 +8,15 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: make -j`nproc` all gui
+      - run: make all gui
   test:
     <<: *defaults
     steps: 
-      - run: make -j`nproc` test
+      - run: make test
   check:
     <<: *defaults
     steps:
-      - run: make -j`nproc` check
+      - run: make check
 workflows:
   version: 2
   build_and_test:
