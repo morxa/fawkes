@@ -7,6 +7,7 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - run: dnf install ccache
       - run:
           name: "Add ROS to the bash environment"
           command: |
@@ -14,14 +15,15 @@ jobs:
       - restore_cache:
           keys:
             - build-v1-{{ .Branch }}-{{ .Revision }}
-            - build-v1-{{ .Branch }}
-            - build-v1
+            - build-v1-{{ .Branch }}-
+            - build-v1-master-
+            - build-v1-
       - checkout
       - run: make all gui
       - save_cache:
           key: build-v1-{{ .Branch }}-{{ .Revision }}
           paths:
-            - .
+            - $HOME/.ccache
       - persist_to_workspace:
           root: .
           paths:
