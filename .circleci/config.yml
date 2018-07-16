@@ -20,10 +20,12 @@ jobs:
             mkdir -p $CCACHE_DIR
             echo 'source /etc/profile.d/ccache.sh' >> $BASH_ENV
       - run:
-          name: Print ccache dir
+          name: Check ccache dir
           command: |
-            echo "ccache dir: $CCACHE_DIR"
-            echo "g++: $(which g++)"
+            if [ -z $CCACHE_DIR ] ; then
+              echo "ccache dir not set up properly"
+              exit 1
+            fi
       - restore_cache:
           keys:
             - ccache-v1-{{ .Branch }}-{{ .Revision }}
