@@ -17,13 +17,21 @@ jobs:
       - save_cache:
           key: build-v1-{{ .Branch }}-{{ .Revision }}
           path: .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
   test:
     <<: *defaults
     steps: 
+      - attach_workspace:
+          at: .
       - run: make test
   check:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: .
       - run: make check
 workflows:
   version: 2
