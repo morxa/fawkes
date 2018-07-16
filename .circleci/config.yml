@@ -11,13 +11,18 @@ jobs:
     steps:
       - run: dnf install -y ccache
       - run:
-          name: Print ccache dir
-          command: |
-            echo "ccache dir: $CCACHE_DIR"
-      - run:
           name: "Add ROS to the bash environment"
           command: |
             echo 'source /usr/lib64/ros/setup.bash' >> $BASH_ENV
+      - run:
+          name: "Set up ccache"
+          command: |
+            echo 'source /etc/profile.d/ccache.sh' >> $BASH_ENV
+      - run:
+          name: Print ccache dir
+          command: |
+            echo "ccache dir: $CCACHE_DIR"
+            echo "g++: $(which g++)"
       - restore_cache:
           keys:
             - ccache-v1-{{ .Branch }}-{{ .Revision }}
