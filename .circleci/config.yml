@@ -11,6 +11,10 @@ jobs:
     steps:
       - run: dnf install -y ccache
       - run:
+          name: Print ccache dir
+          command: |
+            echo "ccache dir: $CCACHE_DIR"
+      - run:
           name: "Add ROS to the bash environment"
           command: |
             echo 'source /usr/lib64/ros/setup.bash' >> $BASH_ENV
