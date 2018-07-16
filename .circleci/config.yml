@@ -31,6 +31,10 @@ jobs:
             - ccache-v1-
       - checkout
       - run: make -C src/libs/core
+      - run:
+          name: Print ccache usage
+          command: |
+            ccache -s
       - save_cache:
           key: ccache-v1-{{ .Branch }}-{{ .Revision }}
           paths:
