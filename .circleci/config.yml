@@ -1,16 +1,20 @@
 # vim:syntax=yaml
 version: 2
+defaults: &defaults 
+  docker:
+    - image: morxa/fawkes-buildenv:f27-kinetic
 jobs:
   build:
-    docker:
-      - image: morxa/fawkes-buildenv:f27-kinetic
+    <<: *defaults
     steps:
       - checkout
       - run: make -j`nproc` all gui
   test:
+    <<: *defaults
     steps: 
       - run: make -j`nproc` test
   check:
+    <<: *defaults
     steps:
       - run: make -j`nproc` check
 workflows:
