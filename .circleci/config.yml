@@ -17,6 +17,7 @@ jobs:
       - run:
           name: "Set up ccache"
           command: |
+            mkdir -p $CCACHE_DIR
             echo 'source /etc/profile.d/ccache.sh' >> $BASH_ENV
       - run:
           name: Print ccache dir
