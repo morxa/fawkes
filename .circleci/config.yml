@@ -3,6 +3,8 @@ version: 2
 defaults: &defaults 
   docker:
     - image: morxa/fawkes-buildenv:f27-kinetic
+  environment:
+    CCACHE_DIR: /ccache
 jobs:
   build:
     <<: *defaults
@@ -14,16 +16,16 @@ jobs:
             echo 'source /usr/lib64/ros/setup.bash' >> $BASH_ENV
       - restore_cache:
           keys:
-            - build-v1-{{ .Branch }}-{{ .Revision }}
-            - build-v1-{{ .Branch }}-
-            - build-v1-master-
-            - build-v1-
+            - ccache-v1-{{ .Branch }}-{{ .Revision }}
+            - ccache-v1-{{ .Branch }}-
+            - ccache-v1-master-
+            - ccache-v1-
       - checkout
       - run: make -C src/libs/core
       - save_cache:
-          key: build-v1-{{ .Branch }}-{{ .Revision }}
+          key: ccache-v1-{{ .Branch }}-{{ .Revision }}
           paths:
-            - $HOME/.ccache
+            - /ccache
       - persist_to_workspace:
           root: .
           paths:
