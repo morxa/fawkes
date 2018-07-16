@@ -23,7 +23,7 @@ jobs:
           name: Check ccache dir
           command: |
             if [ -z $CCACHE_DIR ] ; then
-              echo "ccache dir not set up properly"
+              echo "ccache dir is not set up properly"
               exit 1
             fi
       - restore_cache:
