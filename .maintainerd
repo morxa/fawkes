@@ -1,0 +1,9 @@
+log: true
+commit:
+  subject:
+    mustNotMatch:
+      - !!js/regexp /^fixup!/
+  message:
+    minLines: 1
+    enforceEmptySecondLine: true
+    linesMustHaveLengthBetween: [0,72]
