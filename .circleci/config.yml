@@ -1,9 +1,80 @@
 # vim:syntax=yaml
 version: 2
+defaults: &defaults 
+  docker:
+    - image: morxa/fawkes-buildenv:f27-kinetic
+  environment:
+    CCACHE_DIR: /ccache
 jobs:
   build:
-    docker:
-      - image: morxa/fawkes-buildenv:2017-f27-kinetic
+    <<: *defaults
     steps:
+      - run: dnf install -y ccache
+      - run:
+          name: "Add ROS to the bash environment"
+          command: |
+            echo 'source /usr/lib64/ros/setup.bash' >> $BASH_ENV
+      - run:
+          name: "Set up ccache"
+          command: |
+            mkdir -p $CCACHE_DIR
+            echo 'source /etc/profile.d/ccache.sh' >> $BASH_ENV
+      - run:
+          name: Check ccache dir
+          command: |
+            if [ -z $CCACHE_DIR ] ; then
+              echo "ccache dir is not set up properly"
+              exit 1
+            fi
+      - restore_cache:
+          keys:
+            - ccache-v1-{{ .Branch }}-{{ .Revision }}
+            - ccache-v1-{{ .Branch }}-
+            - ccache-v1-master-
+            - ccache-v1-
       - checkout
-      - run: make -j`nproc` all gui
+      - run: make all gui
+      - run:
+          name: Print ccache usage
+          command: |
+            ccache -s
+      - save_cache:
+          key: ccache-v1-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - /ccache
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+  test:
+    <<: *defaults
+    steps: 
+      - attach_workspace:
+          at: .
+      - run: make test
+  check:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run: make check
+  gitlint:
+    <<: *defaults
+    steps:
+      - run: dnf -y install python3-pip
+      - run: pip3 install gitlint
+      - checkout
+      - run: gitlint --commits origin/master..HEAD
+      - run: gitlint
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - check:
+          requires:
+            - build
+      - gitlint
